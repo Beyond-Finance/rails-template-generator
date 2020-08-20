@@ -1,0 +1,12 @@
+  puts "\nConfiguring Simplecov"
+  prepend_to_file 'spec/rails_helper.rb', <%= file_as_quoted_string 'inserts/rails_helper.rb' %>
+
+  puts "\nConfiguring FactoryBot"
+  insert_into_file 'spec/rails_helper.rb', "\n  config.include FactoryBot::Syntax::Methods\n",
+    after: /RSpec\.configure do \|config\|\R/
+
+  puts "\nInitializing rubocop"
+  create_file '.rubocop.yml', <%= file_as_quoted_string '.rubocop.yml' %>
+  run 'bundle binstubs rubocop'
+  run 'bin/rubocop -A --only Style/FrozenStringLiteralComment'
+  run 'bin/rubocop -a'

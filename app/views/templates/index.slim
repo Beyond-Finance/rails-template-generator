@@ -1,0 +1,42 @@
+.container
+  h1.my-4.text-center Rails Template Generator
+
+  .row
+    .col-lg-8.offset-lg-2
+      .form-group
+        = label_tag :app_name, 'application name'
+        = text_field_tag :app_name, nil, class: 'form-control', placeholder: 'your-app-name', required: true
+
+      .form-group
+        = label_tag :display_name, 'display name'
+        = text_field_tag :display_name, nil, class: 'form-control', placeholder: 'Your App Name'
+
+      .form-group
+        = label_tag :cc_test_reporter_id, 'CircleCI CC_TEST_REPORTER_ID'
+        = text_field_tag :cc_test_reporter_id, nil, class: 'form-control',
+                                                    placeholder: 'TODO: update .circleci/config.yml after generation if you do not have this yet'
+
+      .form-group
+        label options
+
+        .form-check
+          = check_box_tag :db, 'postgresql', true, class: 'form-check-input'
+          = label_tag :db, 'database [postgres]', class: 'form-check-label'
+
+        .form-check
+          = check_box_tag :ui, 'webpacker', true, class: 'form-check-input'
+          = label_tag :ui, 'ui [webpacker]', class: 'form-check-label'
+
+        .form-check
+          = check_box_tag :mailer, 'action mailer', true, class: 'form-check-input'
+          = label_tag :mailer, 'action mailer', class: 'form-check-label'
+
+        .form-check
+          = check_box_tag :action_cable, 'action cable', false, class: 'form-check-input'
+          = label_tag :action_cable, 'action cable', class: 'form-check-label'
+
+      .form-group.mt-5
+        label execute in application parent directory:
+        output#rails-new.form-control.bg-light.overflow-auto.text-nowrap data-url=(template_url(':attrs'))
+
+= javascript_pack_tag 'templates'

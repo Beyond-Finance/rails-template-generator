@@ -1,0 +1,4 @@
+  puts "\nCleaning up generated comments"
+  %w[Gemfile spec/rails_helper.rb spec/spec_helper.rb].each do |f|
+    gsub_file f, /(# (.+)(\R?))|(=begin((.|\R)*)=end)|(#\R)/, ''
+  end

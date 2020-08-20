@@ -1,0 +1,7 @@
+
+puts "\nSetting up slim for views"
+insert_into_file 'config/application.rb',
+                 "\nconfig.generators do |g|\n  g.template_engine :slim\nend",
+                 after: 'class Application < Rails::Application'
+remove_file 'app/views/layouts/application.html.erb'
+create_file 'app/views/layouts/application.slim', <%= file_as_quoted_string('application.slim') %>

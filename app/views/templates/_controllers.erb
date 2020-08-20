@@ -1,0 +1,14 @@
+  puts "\nUpdating routes"
+  remove_file 'config/routes.rb'
+  create_file 'config/routes.rb', "Rails.application.routes.draw do<%= "\\nroot 'home#index'".html_safe if @template.ui? %>\n\nresources :ping, only: %(index)\nend"
+
+  <% if @template.ui? %>
+  puts "\nAdding default home"
+  create_file 'app/controllers/home_controller.rb', "class HomeController < ApplicationController\nend"
+  create_file 'app/views/home/index.slim', <%= file_as_quoted_string 'views/home.slim' %>
+  create_file 'spec/controllers/home_controller_spec.rb', <%= file_as_quoted_string 'spec/controllers/home_controller_spec.rb' %>
+  <%end%>
+
+  puts "\nAdding ping controller"
+  create_file 'app/controllers/ping_controller.rb', "class PingController < ActionController::Base\ndef index\nrender inline: 'ok'\nend\nend"
+  create_file 'spec/controllers/ping_controller_spec.rb', <%= file_as_quoted_string 'spec/controllers/ping_controller_spec.rb' %>

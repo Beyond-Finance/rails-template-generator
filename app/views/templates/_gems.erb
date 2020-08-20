@@ -1,0 +1,42 @@
+
+puts "\nStripping explicit Gemfile versions"
+gsub_file 'Gemfile', /, '(.+)/, ''
+
+# using the gem directive creates some messy ordering,
+# so inserting instead to guarantee some order to placement
+puts "\nUpdating gems"
+
+GEMS = <%= quoted_string(render partial: 'templates/gems/base') %>
+GEMS_DEVELOPMENT = <%= quoted_string(render partial: 'templates/gems/development') %>
+GEMS_DEVELOPMENT_TEST = <%= quoted_string(render partial: 'templates/gems/development_test') %>
+GEMS_TEST = <%= quoted_string(render partial: 'templates/gems/test') %>
+
+gsub_file 'Gemfile', /gem 'tzinfo-data'(.*)(\R?)/, ''
+
+gemfile = File.readlines('Gemfile')
+
+if gemfile.grep(/group/).any?
+  insert_into_file 'Gemfile', GEMS, before: /\Rgroup(.|\s|\R)*/
+else
+  append_to_file 'Gemfile', GEMS
+end
+
+if gemfile.grep(/group :development, :test do/).any?
+  insert_into_file 'Gemfile', GEMS_DEVELOPMENT_TEST, after: /group :development, :test do/
+elsif gemfile.grep(/group :test, :development do/).any?
+  insert_into_file 'Gemfile', GEMS_DEVELOPMENT_TEST, after: /group :test, :development do/
+else
+  append_to_file 'Gemfile', "\n\ngroup :development, :test do#{GEMS_DEVELOPMENT_TEST}end"
+end
+
+if gemfile.grep(/group :development do/).any?
+  insert_into_file 'Gemfile', GEMS_DEVELOPMENT, after: /group :development do/
+else
+  append_to_file 'Gemfile', "\n\ngroup :development do#{GEMS_DEVELOPMENT}end"
+end
+
+if gemfile.grep(/group :test do/).any?
+  insert_into_file 'Gemfile', GEMS_TEST, after: /group :test do/
+else
+  append_to_file 'Gemfile', "\n\ngroup :test do#{GEMS_TEST}end"
+end

@@ -1,0 +1,4 @@
+  puts "\nConfiguring rspec"
+  run 'spring stop'
+  rails_command 'g rspec:install'
+  run 'bundle binstubs rspec-core'
