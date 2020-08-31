@@ -6,10 +6,10 @@ gsub_file 'Gemfile', /, '(.+)/, ''
 # so inserting instead to guarantee some order to placement
 puts "\nUpdating gems"
 
-GEMS = <%= quoted_string(render partial: 'templates/gems/base') %>
-GEMS_DEVELOPMENT = <%= quoted_string(render partial: 'templates/gems/development') %>
-GEMS_DEVELOPMENT_TEST = <%= quoted_string(render partial: 'templates/gems/development_test') %>
-GEMS_TEST = <%= quoted_string(render partial: 'templates/gems/test') %>
+GEMS = <%= quoted_string(render partial: 'scripts/gems/base') %>
+GEMS_DEVELOPMENT = <%= quoted_string(render partial: 'scripts/gems/development') %>
+GEMS_DEVELOPMENT_TEST = <%= quoted_string(render partial: 'scripts/gems/development_test') %>
+GEMS_TEST = <%= quoted_string(render partial: 'scripts/gems/test') %>
 
 gsub_file 'Gemfile', /gem 'tzinfo-data'(.*)(\R?)/, ''
 

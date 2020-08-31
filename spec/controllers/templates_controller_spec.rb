@@ -17,7 +17,7 @@ RSpec.describe TemplatesController, type: :controller do
     before { get :show, params: { attrs: base64_attrs } }
 
     it { expect(response).to have_http_status :success }
-    it { expect(response).to render_template :show }
+    it { expect(response).to render_template 'scripts/app' }
     it { expect(assigns(:template).ui?).to be true }
     it { expect(assigns(:template).display_name).to eq display_name }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  FILES_DIR = Rails.root.join('app/views/templates/files/')
+  FILES_DIR = Rails.root.join('app/templates/files/')
 
   def file_as_quoted_string(file)
     quoted_string(File.read(FILES_DIR.join(file)))

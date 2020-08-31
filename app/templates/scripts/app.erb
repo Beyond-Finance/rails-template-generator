@@ -1,0 +1,31 @@
+display_name = '<%= @template.display_name %>'
+puts "\nGenerating #{display_name} [#{@app_name}]\n"
+
+<%= render partial: 'scripts/gems' %>
+<% if @template.ui? %>
+  <%= render partial: 'scripts/yarn_packages' %>
+  <%= render partial: 'scripts/slim' %>
+<% end %>
+
+after_bundle do
+<%= render partial: 'scripts/rspec_install' %>
+<%= render partial: 'scripts/db' if @template.db? %>
+<%= render partial: 'scripts/environments' %>
+<% if @template.ui? %>
+  <%= render partial: 'scripts/webpacker' %>
+  <%= render partial: 'scripts/helpers' %>
+<% end %>
+<%= render partial: 'scripts/initializers' %>
+<%= render partial: 'scripts/controllers' %>
+<%= render partial: 'scripts/comments' %>
+<%= render partial: 'scripts/ci' %>
+<%= render partial: 'scripts/support' %>
+<%= render partial: 'scripts/git' %>
+<% if @template.ui? %>
+  if yes?('Test + start application?')
+    run 'bin/rspec'
+    run 'yarn test'
+    run 'foreman start'
+  end
+<% end %>
+end

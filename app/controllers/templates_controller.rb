@@ -2,9 +2,10 @@
 
 class TemplatesController < ApplicationController
   before_action :template, only: %i[show]
+  prepend_view_path Rails.root.join('app/templates')
 
   def show
-    render layout: false
+    render 'scripts/app', layout: false
   end
 
   private

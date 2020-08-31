@@ -15,7 +15,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     let(:file_name) { Faker::File.file_name }
     before do
       allow(File)
-        .to receive(:read).with(Rails.root.join("app/views/templates/files/#{file_name}"))
+        .to receive(:read).with(Rails.root.join("app/templates/files/#{file_name}"))
                           .and_return raw_string
     end
     subject { helper.file_as_quoted_string(file_name) }
