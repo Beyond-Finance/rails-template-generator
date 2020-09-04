@@ -1,0 +1,24 @@
+  puts "\nConfiguring webpacker"
+  gsub_file 'config/webpacker.yml', /extract_css: false/, 'extract_css: true'
+  insert_into_file 'config/webpacker.yml', "\n    - .jsx", after: '- .js'
+  insert_into_file 'config/webpacker.yml', "\nstaging:\n  <<: *default\n\n  compile: false\n  extract_css: true\n  cache_manifest: true\n\n",
+    before: 'production:'
+  insert_into_file 'package.json', <%= file_as_quoted_string 'inserts/package.json' %>, before: /\R}$/
+  # ugh, \\\\ above and various variations convert to a single backslash on insertion to file
+  gsub_file 'package.json', /BACKSLASH/, '\\'
+
+  puts "\nUpdating application webpacker assets"
+  remove_file 'app/javascript/packs/application.js'
+  create_file 'app/javascript/packs/application.js', <%= file_as_quoted_string 'packs/application.js' %>
+  create_file 'app/javascript/styles/application.scss', '@import "~bootstrap/scss/bootstrap";'
+  create_file 'app/javascript/styles/partials/_bootstrap.scss', <%= file_as_quoted_string '_bootstrap.scss' %>
+
+  puts "\nConfigure stylelint + apply to generated files"
+  create_file '.stylelintrc', <%= file_as_quoted_string '.stylelintrc' %>
+  run 'yarn stylelint --fix public/*.html'
+
+  puts "\nCreating Procfile"
+  create_file 'Procfile', "rails: bin/rails s -p \"${#{@app_name.underscore.upcase}_PORT:-3000}\"\nwebpacker: bin/webpack-dev-server"
+
+  puts "\nCreating webpacker .keep directories"
+  %w[app/javascript/images app/javascript/tests].each { |d| create_file "#{d}/.keep" }

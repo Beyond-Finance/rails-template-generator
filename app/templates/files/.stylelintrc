@@ -1,0 +1,7 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "at-rule-no-unknown": null,
+    "unit-no-unknown": [true, { ignoreFunctions: ["-webkit-image-set", "image-set"] }]
+  }
+}

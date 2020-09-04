@@ -1,0 +1,52 @@
+{
+  "name": "rails_template_generator",
+  "private": true,
+  "dependencies": {
+    "@rails/activestorage": "^6.0.0",
+    "@rails/ujs": "^6.0.0",
+    "@rails/webpacker": "5.1.1",
+    "bootstrap": "^4.5.0",
+    "jquery": "^3.5.1",
+    "jquery-ujs": "^1.2.2",
+    "popper.js": "^1.16.1",
+    "stylelint": "^13.6.1"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "babel-jest": "^26.1.0",
+    "jest": "^26.1.0",
+    "jest-junit": "^11.0.1",
+    "webpack-dev-server": "^3.11.0"
+  }
+  ,
+  "jest": {
+    "roots": [
+      "<rootDir>/app/javascript/tests"
+    ],
+    "verbose": true,
+    "testURL": "http://localhost",
+    "collectCoverage": true,
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/app/javascript"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "transform": {
+      "^.+\\.js(x)?$": "<rootDir>/node_modules/babel-jest"
+    }
+  },
+  "scripts": {
+    "css-fix": "stylelint --fix app/**/*.*css",
+    "test": "jest --config package.json --passWithNoTests"
+  }
+}

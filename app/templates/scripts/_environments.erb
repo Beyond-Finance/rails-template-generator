@@ -1,0 +1,3 @@
+  puts "\nUpdating environment configuration"
+  insert_into_file 'config/environments/development.rb', "\n\n  config.hosts << '#{@app_name}.test'\n  config.hosts << `hostname`.strip.downcase", before: /\Rend$/
+  create_file 'config/environments/staging.rb', <%= file_as_quoted_string('environments/staging.rb') %>

@@ -1,0 +1,15 @@
+AllCops:
+  Exclude:
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'db/**/*'
+    - 'node_modules/**/*'
+    - '**/files/**/*'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'config/routes.rb'
+    - 'spec/**/*'
+
+Style/Documentation:
+  Enabled: false

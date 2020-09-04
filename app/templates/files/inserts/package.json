@@ -1,0 +1,31 @@
+  ,
+  "jest": {
+    "roots": [
+      "<rootDir>/app/javascript/tests"
+    ],
+    "verbose": true,
+    "testURL": "http://localhost",
+    "collectCoverage": true,
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/app/javascript"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "transform": {
+      "^.+BACKSLASHBACKSLASH.js(x)?$": "<rootDir>/node_modules/babel-jest"
+    }
+  },
+  "scripts": {
+    "css-fix": "stylelint --fix app/**/*.*css",
+    "test": "jest --config package.json --passWithNoTests"
+  }
