@@ -1,0 +1,6 @@
+puts "\nAdding rspec\n"
+run 'rspec --init'
+run 'bundle binstubs rspec-core'
+
+prepend_to_file 'spec/spec_helper.rb', "require 'active_support/all'\nrequire '#{name}'\nrequire 'pry'\nrequire 'faker'\n\n"
+

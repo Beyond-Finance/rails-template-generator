@@ -1,0 +1,11 @@
+puts "\nSetting up generator support\n"
+
+generator = "lib/generators/#{name}/install_generator.rb"
+initializer = "lib/generators/templates/#{name}.rb"
+
+create_file generator, <%= file_as_quoted_string 'plugins/install_generator.rb' %>
+gsub_file generator, /GEM_MODULE/, camelized
+gsub_file generator, /GEM_NAME/, name
+
+create_file initializer, <%= file_as_quoted_string 'plugins/initializer.rb' %>
+gsub_file initializer, /GEM_MODULE/, camelized

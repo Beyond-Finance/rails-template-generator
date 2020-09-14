@@ -1,4 +1,6 @@
   puts "\nUpdating .gitignore"
   insert_into_file '.gitignore', "\n*.swp\n.DS_Store\n\n# Ignore all local test artifacts\ncoverage/*\njunit.xml\nrspec.xml\nspec/examples.txt",
                    after: '!/tmp/.keep'
+<% if @template.ui? %>
   append_to_file '.gitignore', "\npackage-lock.json"
+<% end %>

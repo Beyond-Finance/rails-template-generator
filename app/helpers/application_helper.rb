@@ -8,7 +8,9 @@ module ApplicationHelper
   end
 
   def quoted_string(string)
-    "\"#{string.gsub(/\n/, '\\n').gsub(/"/, '\\"')}\"".html_safe
+    "\"#{string.gsub(/\n/, '\\n')
+               .gsub(/"/, '\\"')
+               .gsub(/#\{/, '\#{')}\"".html_safe
   end
 
   def title(title)

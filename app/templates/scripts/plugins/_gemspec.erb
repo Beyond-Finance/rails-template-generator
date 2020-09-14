@@ -1,0 +1,11 @@
+gemspec = "#{name}.gemspec"
+puts "\nUpdating #{gemspec}\n"
+
+gsub_file gemspec, /^(\s)*#.*/, ''
+gsub_file gemspec, /^\$\:\.push.*/, "$LOAD_PATH.push File.expand_path('lib', __dir__)"
+gsub_file gemspec, /^.*spec\.homepage.*/, ''
+gsub_file gemspec, /"TODO: .*"/, "'#{name}'"
+insert_into_file gemspec, "\nspec.required_ruby_version = '>= 2.4.0'\n", after: /^.*spec\.description.*/
+gsub_file gemspec, /^(\s)*(if spec.*?)end/m, ''
+
+insert_into_file gemspec, <%= file_as_quoted_string 'inserts/gemspec.rb' %>, before: /\Rend$/

@@ -1,0 +1,12 @@
+.bundle/
+log/*.log
+pkg/
+Gemfile.lock
+
+*.swp
+.DS_Store
+
+# Ignore all local test artifacts
+coverage/*
+rspec.xml
+spec/examples.txt
