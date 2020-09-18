@@ -1,9 +1,10 @@
   puts "\nConfiguring Simplecov"
-  spec_helper = 'spec/rails_helper.rb'
-  spec_helper = 'spec/spec_helper.rb' unless File.exist?(File.expand_path(spec_helper))
+  spec_helper = '<%= %w[mountable plugin].include?(@template.type) ? 'spec/spec_helper.rb' : 'spec/rails_helper.rb' %>'
   prepend_to_file spec_helper, <%= file_as_quoted_string 'inserts/rails_helper.rb' %>
   <% if @template.type == 'plugin' %>
   gsub_file 'spec/spec_helper.rb', /^(\s)*# rails-generated superclass files.*?end/m, "  add_filter '/lib/#{name}/railtie.rb'\n  add_filter '/lib/#{name}/version.rb'\n  add_filter '/lib/generators'\nend"
+  <% elsif @template.type == 'mountable' %>
+  gsub_file 'spec/spec_helper.rb', /^(\s)*# rails-generated superclass files.*?end/m, "  add_filter { |f| File.basename(f.filename).starts_with?('application_') }\n  add_filter '/lib/#{name}/version.rb'\n  add_filter '/lib/generators'\nend"
   <% end %>
 
   <% if @template.db? %>

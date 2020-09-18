@@ -1,0 +1,8 @@
+puts "\nAdding engine configuration\n"
+engine = "lib/#{name}/engine.rb"
+
+insert_into_file engine, <%= file_as_quoted_string 'inserts/engine.rb' %>, after: /^(\s)*(engine_name|isolate_namespace).*/
+<% if @template.ui? %>
+prepend_to_file engine, "require 'slim-rails'\n"
+insert_into_file engine, "\n      g.template_engine = :slim", after: /^.*fixture_replacement.*/
+<% end %>

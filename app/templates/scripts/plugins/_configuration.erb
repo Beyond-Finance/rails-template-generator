@@ -8,7 +8,7 @@ create_file configuration, <%= file_as_quoted_string 'plugins/configuration.rb' 
 gsub_file configuration, /GEM_MODULE/, camelized
 
 insert_into_file root, "\nrequire '#{name}/configuration'", after: /^require.*/
-insert_into_file root, " if defined?(Rails)", after: /^require.*railtie.*/
+<% if @template.type == 'plugin'%>insert_into_file root, " if defined?(Rails)", after: /^require.*railtie.*/<% end %>
 insert_into_file root, <%= file_as_quoted_string 'inserts/gem_root.rb' %>, after: /^module .*/
 gsub_file root, /^.*# Your code.*/, ''
 
