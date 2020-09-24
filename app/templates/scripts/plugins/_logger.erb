@@ -1,0 +1,9 @@
+logger = "lib/#{name}/logger.rb"
+spec = "spec/lib/#{name}/logger_spec.rb"
+
+create_file logger, <%= file_as_quoted_string 'plugins/logger.rb' %>
+gsub_file logger, /GEM_MODULE/, camelized
+
+create_file spec, <%= file_as_quoted_string 'plugins/logger_spec.rb' %>
+gsub_file spec, /GEM_MODULE/, camelized
+gsub_file spec, /GEM_NAME/, name

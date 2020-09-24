@@ -2,3 +2,7 @@
   run 'spring stop'
   rails_command 'g rspec:install'
   run 'bundle binstubs rspec-core'
+  <% if @template.type == 'mountable' %>
+  prepend_to_file 'spec/spec_helper.rb', "\nrequire 'rails'\nrequire '#{name}'\nrequire 'pry'\nrequire 'faker'\n\n"
+  gsub_file 'spec/rails_helper.rb', /^require File.expand_path\('.*'/, "require File.expand_path('dummy/config/environment.rb'"
+  <% end %>

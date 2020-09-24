@@ -1,0 +1,16 @@
+puts "\nAdding configuration support...\n"
+
+configuration = "lib/#{name}/configuration.rb"
+root = "lib/#{name}.rb"
+spec = "spec/lib/#{name}_spec.rb"
+
+create_file configuration, <%= file_as_quoted_string 'plugins/configuration.rb' %>
+gsub_file configuration, /GEM_MODULE/, camelized
+
+insert_into_file root, "\nrequire '#{name}/configuration'", after: /^require.*/
+<% if @template.type == 'plugin'%>insert_into_file root, " if defined?(Rails)", after: /^require.*railtie.*/<% end %>
+insert_into_file root, <%= file_as_quoted_string 'inserts/gem_root.rb' %>, after: /^module .*/
+gsub_file root, /^.*# Your code.*/, ''
+
+create_file spec, <%= file_as_quoted_string 'plugins/gem_root_spec.rb' %>
+gsub_file spec, /GEM_MODULE/, camelized

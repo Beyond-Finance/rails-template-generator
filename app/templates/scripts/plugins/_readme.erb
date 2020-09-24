@@ -1,0 +1,4 @@
+prepend_to_file 'README.md', <%= file_as_quoted_string 'inserts/plugin_todo.md' %>
+gsub_file 'README.md', /GEM_NAME/, name
+
+puts "\n\nFor next steps, open README.md\n\n"
