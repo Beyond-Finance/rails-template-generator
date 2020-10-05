@@ -1,10 +1,8 @@
 .container
-  .row
-    .col-md-6.offset-md-3.text-center
-      = image_tag '//beyondfinance.com//images/beyond-logo.min.png', class: 'mw-100 mx-auto my-5'
-  .row
+  .row.my-5
     .col-md-10.offset-md-1.text-center
-      p.lead.mt-5 #{display_name} (<code>#{@app_name}</code>) is running!!
+      p.lead.mt-5 DISPLAY_NAME (<code>APP_NAME</code>) is running!!
       p This view is running from <code>home#index</code> ... you may not want to keep the view OR the controller.
       p Feel free to delete the view directory, controller, and spec, and update the routes file root.
-      p.mt-5.small\n        strong Have a good time and make something wonderful.
+      p.mt-5.small
+        strong Have a good time and make something wonderful.
