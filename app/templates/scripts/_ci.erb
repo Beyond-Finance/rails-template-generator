@@ -1,8 +1,14 @@
+  <% if @template.code_climate? %>
   puts "\nConfiguring Code Climate"
   create_file '.code_climate', <%= file_as_quoted_string('.code_climate') %>
+  <% end %>
 
+  <% if @template.circleci? %>
   puts "\nConfiguring CircleCI"
   create_file '.circleci/config.yml', <%= file_as_quoted_string('.circleci.yml') %>
-  <%= "gsub_file '.circleci/config.yml', /TODO_CC_TEST_REPORTER_ID/, '#{@template.cc_test_reporter_id}'".html_safe if @template.cc_test_reporter_id? %>
+  <%= "gsub_file '.circleci/config.yml', /TODO_CC_TEST_REPORTER_ID/, '#{@template.cc_test_reporter_id}'".html_safe if @template.cc_test_reporter_id.present? %>
   gsub_file '.circleci/config.yml', /APP_NAME/, app_name
   gsub_file '.circleci/config.yml', /RUBY_VERSION/, RUBY_VERSION
+  cache_key = '{{ checksum "Gemfile.lock" }}<%= '-{{ checksum "yarn.lock" }}'.html_safe if @template.ui? %>'
+  gsub_file '.circleci/config.yml', /CACHE_KEY/, cache_key
+  <% end %>

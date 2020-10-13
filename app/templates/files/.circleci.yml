@@ -25,7 +25,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+            - APP_NAME-CACHE_KEY
             - APP_NAME-
       - run:
           name: yarn install
@@ -38,7 +38,7 @@ jobs:
             gem install bundler
             bundle check || bundle install
       - save_cache:
-          key: APP_NAME-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+          key: APP_NAME-CACHE_KEY
           paths:
             - ~/APP_NAME/APP_NAME_index/node_modules
             - ~/APP_NAME/APP_NAME_index/vendor/bundle
@@ -53,7 +53,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-{{ checksum "Gemfile.lock" }}
+            - APP_NAME-CACHE_KEY
             - APP_NAME-
       - run:
           name: Bundle Install
@@ -110,7 +110,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-{{ checksum "Gemfile.lock" }}
+            - APP_NAME-CACHE_KEY
             - APP_NAME-
       - run:
           name: Bundle Install
@@ -139,7 +139,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+            - APP_NAME-CACHE_KEY
             - APP_NAME-
       - run:
           name: yarn test

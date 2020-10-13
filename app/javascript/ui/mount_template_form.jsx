@@ -60,30 +60,39 @@ const retrieveDisplayName = appName => {
 const retrieveUI = () => {
   const appName = $('input#app_name').val().trim();
   const pluginName = $('input#plugin_name').val().trim();
+  const checks = $('input[type=checkbox]').toArray().reduce((checks, inp) => {
+    const $inp = $(inp);
+    return Object.assign(checks, { [$inp.attr('name')]: $inp.is(':checked') });
+  }, {});
 
   return {
     actionCable: $('input#action_cable').is(':checked'),
     appName,
     mailer: $('input#mailer').is(':checked'),
     pluginName,
-    templateParams: {
+    templateParams: Object.assign(checks, {
       ccTestReporterId: $('input#cc_test_reporter_id').val(),
       db: $('input#db').is(':checked') && $('input#db').val(),
       displayName: retrieveDisplayName(appName),
       type: type(),
-      ui: $('input#ui').is(':checked'),
-    },
+    }),
     $railsNew: $('output#rails-new'),
   };
 };
 
 const templateUrl = ($railsNew, templateParams) => $railsNew.data().url.replace(':attrs', window.btoa(JSON.stringify(templateParams)));
 
+const toggleNestedOptions = function() {
+  const $inp = $(this);
+  $inp.parent().find('.nested-options').eq(0)[$inp.is(':checked') ? 'removeClass' : 'addClass']('d-none');
+};
+
 const type = () => $('#type').val();
 
 export default () => {
   $('body').on('change', 'input, select, textarea', buildLink);
   $('body').on('change', '#app_name, #plugin_name', function () { $('#app_name, #plugin_name').val($(this).val()) });
+  $('body').on('change', 'input[type=checkbox].has-options', toggleNestedOptions);
   addTypeSelection();
   enableOutputSelection();
   $('#type').trigger('change');

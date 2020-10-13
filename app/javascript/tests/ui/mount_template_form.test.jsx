@@ -21,10 +21,14 @@ describe('template form', () => {
                                 '<input id="plugin_name" />' +
                                 '<input id="display_name" />' +
                                 '<input id="cc_test_reporter_id" />' +
-                                '<input id="db" type="checkbox" value="postgresql" checked="checked" />' +
-                                '<input id="ui" type="checkbox" value="webpacker" checked="checked" />' +
-                                '<input id="mailer" type="checkbox" value="action mailer" checked="checked" />' +
-                                '<input id="action_cable" type="checkbox" value="action cable" />' +
+                                '<input id="db" name="db" type="checkbox" value="postgresql" checked="checked" />' +
+                                '<input id="ui" name="ui" type="checkbox" value="webpacker" checked="checked" />' +
+                                '<input id="mailer" name="mailer" type="checkbox" value="action mailer" checked="checked" />' +
+                                '<input id="action_cable" name="action_cable" type="checkbox" value="action cable" />' +
+                                '<div>' +
+                                  '<input checked="checked" id="show-more" class="has-options" name="show-more" type="checkbox" />' +
+                                  '<div class="nested-options"></div>' +
+                                '</div>' +
                                 '<output id="rails-new" data-url="http://example.com/:attrs" />' +
                               '</form>';
 
@@ -169,6 +173,17 @@ describe('template form', () => {
       $typeSelect.val('plugin').trigger('change');
       [$mountablePlugin, $plugin].forEach($node => expect($node.hasClass('d-none')).toBeFalsy());
       [$application, $applicationMountable, $mountable].forEach($node => expect($node.hasClass('d-none')).toBeTruthy());
+    });
+
+    test('toggles nested options section', () => {
+      const $showMore = $('#show-more');
+      const $nestedOptions = $('.nested-options');
+      
+      $showMore.trigger('click');
+      expect($nestedOptions.hasClass('d-none')).toBeTruthy();
+      
+      $showMore.trigger('click');
+      expect($nestedOptions.hasClass('d-none')).toBeFalsy();
     });
   });
 
