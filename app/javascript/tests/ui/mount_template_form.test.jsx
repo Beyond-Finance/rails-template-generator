@@ -79,6 +79,15 @@ describe('template form', () => {
       sharedExamples.synchNames();
     });
 
+    test('add CC_TEST_REPORTER_ID', () => {
+      const ccId = 'CIRCLECITESTID';
+      const $ccTestReporterId = $('input#cc_test_reporter_id');
+      inputText($appName, 'test-app');
+      inputText($ccTestReporterId, ccId);
+
+      expect(decodedAttrs().ccTestReporterId).toBe(ccId);
+    });
+
     test('toggle db', () => {
       const $db = $('input#db');
       inputText($appName, 'test-app');
