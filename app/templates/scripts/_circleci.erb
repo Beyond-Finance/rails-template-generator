@@ -1,35 +1,41 @@
+  puts "\nConfiguring CircleCI"
+  cache_key = '{{ checksum "Gemfile.lock" }}<%= '-{{ checksum "yarn.lock" }}'.html_safe if @template.ui? %>'
+
+  create_file '.circleci/config.yml', <<-CIRCLECI
 version: 2
 
 references:
   default_docker_ruby_executor: &default_docker_ruby_executor
-    image: circleci/ruby:RUBY_VERSION-node-browsers
+    image: circleci/ruby:#{RUBY_VERSION}-node-browsers
     environment:
       BUNDLE_PATH: vendor/bundle
       PGHOST: 127.0.0.1
-      PGUSER: APP_NAME
+      PGUSER: #{app_name}
       RAILS_ENV: test
       COVERAGE: true
       TZ: /usr/share/zoneinfo/America/Chicago
   postgres: &postgres
     image: circleci/postgres:11.4-alpine
     environment:
-      POSTGRES_DB: APP_NAME_test
-      POSTGRES_USER: APP_NAME
+      POSTGRES_DB: #{app_name}_test
+      POSTGRES_USER: #{app_name}
 
 jobs:
   build:
-    working_directory: ~/APP_NAME/APP_NAME_index
+    working_directory: ~/#{app_name}/#{app_name}_index
     docker:
       - *default_docker_ruby_executor
     steps:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-CACHE_KEY
-            - APP_NAME-
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
+<% if @template.ui? %>
       - run:
           name: yarn install
           command: yarn install
+<% end %>
       - run:
           name: Bundle Install
           command: |
@@ -38,13 +44,15 @@ jobs:
             gem install bundler
             bundle check || bundle install
       - save_cache:
-          key: APP_NAME-CACHE_KEY
+          key: #{app_name}-#{cache_key}
           paths:
-            - ~/APP_NAME/APP_NAME_index/node_modules
-            - ~/APP_NAME/APP_NAME_index/vendor/bundle
+<% if @template.ui? %>
+            - ~/#{app_name}/#{app_name}_index/node_modules
+<% end %>
+            - ~/#{app_name}/#{app_name}_index/vendor/bundle
 
   test:
-    working_directory: ~/APP_NAME/APP_NAME_index
+    working_directory: ~/#{app_name}/#{app_name}_index
     parallelism: 1
     docker:
       - *default_docker_ruby_executor
@@ -53,8 +61,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-CACHE_KEY
-            - APP_NAME-
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
       - run:
           name: Bundle Install
           command: |
@@ -74,10 +82,12 @@ jobs:
           name: Database setup
           command: |
             bundle exec rails db:drop db:create db:migrate
+<% if @template.ui? %>
       - run:
           name: Compile webpacker manifest and files
           command: |
             bundle exec rails webpacker:compile
+<% end %>
       - run:
           name: Run RSpec
           command: |
@@ -101,7 +111,7 @@ jobs:
           destination: test-results
 
   rubocop:
-    working_directory: ~/APP_NAME/APP_NAME_index
+    working_directory: ~/#{app_name}/#{app_name}_index
     parallelism: 1
     docker:
       - *default_docker_ruby_executor
@@ -110,8 +120,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-CACHE_KEY
-            - APP_NAME-
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
       - run:
           name: Bundle Install
           command: |
@@ -131,16 +141,17 @@ jobs:
           command: |
             bundle exec rubocop
 
+<% if @template.ui? %>
   yarn_test:
-    working_directory: ~/APP_NAME/APP_NAME_index
+    working_directory: ~/#{app_name}/#{app_name}_index
     docker:
       - *default_docker_ruby_executor
     steps:
       - checkout
       - restore_cache:
           keys:
-            - APP_NAME-CACHE_KEY
-            - APP_NAME-
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
       - run:
           name: yarn test
           command: yarn jest --ci --passWithNoTests --runInBand --reporters=default --reporters=jest-junit
@@ -148,16 +159,17 @@ jobs:
           path: /tmp/junit
       - store_artifacts:
           path: /tmp/junit
+<% end %>
 
   upload-coverage:
-    working_directory: ~/APP_NAME/APP_NAME_index
+    working_directory: ~/#{app_name}/#{app_name}_index
     docker:
       - *default_docker_ruby_executor
     environment:
-      CC_TEST_REPORTER_ID: TODO_CC_TEST_REPORTER_ID
+    CC_TEST_REPORTER_ID: <%= @template.cc_test_reporter_id.present? ? @template.cc_test_reporter_id : 'TODO_CC_TEST_REPORTER_ID' %>
     steps:
       - attach_workspace:
-          at: ~/APP_NAME/APP_NAME_index
+          at: ~/#{app_name}/#{app_name}_index
       - run:
           name: Install Code Climate Test Reporter
           command: |
@@ -178,9 +190,12 @@ workflows:
       - rubocop:
           requires:
             - build
+<% if @template.ui? %>
       - yarn_test:
           requires:
             - build
+<% end %>
       - upload-coverage:
           requires:
              - test
+  CIRCLECI
