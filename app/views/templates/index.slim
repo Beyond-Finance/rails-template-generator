@@ -21,20 +21,15 @@
         = text_field_tag :display_name, nil, class: 'form-control', placeholder: 'Your App Name'
 
       .form-group
-        label.font-weight-bold ci
-
         .form-check
-          = check_box_tag :circleci, 'CircleCI', true, class: 'form-check-input has-options'
+          = check_box_tag :ci, 'CI', true, class: 'form-check-input has-options'
           div
-            = label_tag :circleci, 'CircleCI', class: 'form-check-label'
-            .nested-options.my-2
-              = label_tag :cc_test_reporter_id, 'CC_TEST_REPORTER_ID'
-              = text_field_tag :cc_test_reporter_id, nil, class: 'form-control',
-                                                          placeholder: 'TODO: update .circleci/config.yml after generation if you do not have this yet'
-        
-        .form-check
-          = check_box_tag :code_climate, 'Code Climate', true, class: 'form-check-input'
-          = label_tag :code_climate, 'Code Climate', class: 'form-check-label'
+            = label_tag :ci, 'CI', class: 'form-check-label'
+            ul.nested-options.p-0
+              li
+                = link_to 'CircleCI', '//circleci.com/', class: 'd-block', target: '_blank'
+                .text-danger TODO: update <code class='font-weight-bold'>CC_TEST_REPORTER_ID</code> in .circleci/config.yml after repository creation
+              li = link_to 'Code Climate', '//codeclimate.com/', target: '_blank'
 
       .form-group.application.mountable
         label.font-weight-bold options

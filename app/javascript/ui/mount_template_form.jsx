@@ -71,7 +71,6 @@ const retrieveUI = () => {
     mailer: $('input#mailer').is(':checked'),
     pluginName,
     templateParams: Object.assign(checks, {
-      ccTestReporterId: $('input#cc_test_reporter_id').val(),
       db: $('input#db').is(':checked') && $('input#db').val(),
       displayName: retrieveDisplayName(appName),
       type: type(),

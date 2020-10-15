@@ -20,7 +20,6 @@ describe('template form', () => {
                                 '<input id="app_name" />' +
                                 '<input id="plugin_name" />' +
                                 '<input id="display_name" />' +
-                                '<input id="cc_test_reporter_id" />' +
                                 '<input id="db" name="db" type="checkbox" value="postgresql" checked="checked" />' +
                                 '<input id="ui" name="ui" type="checkbox" value="webpacker" checked="checked" />' +
                                 '<input id="mailer" name="mailer" type="checkbox" value="action mailer" checked="checked" />' +
@@ -81,15 +80,6 @@ describe('template form', () => {
 
       expect(decodedAttrs().displayName).toBe(customName);
       sharedExamples.synchNames();
-    });
-
-    test('add CC_TEST_REPORTER_ID', () => {
-      const ccId = 'CIRCLECITESTID';
-      const $ccTestReporterId = $('input#cc_test_reporter_id');
-      inputText($appName, 'test-app');
-      inputText($ccTestReporterId, ccId);
-
-      expect(decodedAttrs().ccTestReporterId).toBe(ccId);
     });
 
     test('toggle db', () => {
