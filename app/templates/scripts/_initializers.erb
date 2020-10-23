@@ -1,2 +1,4 @@
-  puts "\nAdding routes downcaser"
-  create_file 'config/initializers/route_downcaser.rb', <%= file_as_quoted_string 'initializers/route_downcaser.rb' %>
+  <% unless @template.api? %>
+    puts "\nAdding routes downcaser"
+    create_file 'config/initializers/route_downcaser.rb', <%= file_as_quoted_string 'initializers/route_downcaser.rb' %>
+  <% end %>

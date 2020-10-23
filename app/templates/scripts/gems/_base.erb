@@ -4,6 +4,8 @@ gem 'aws-sdk'
 gem 'aws-sdk-rails'
 gem 'aws-sdk-secretsmanager', require: false
 gem 'newrelic_rpm'
+<% unless @template.api? %>
 gem 'route_downcaser'
 gem 'uglifier'
+<% end %>
 

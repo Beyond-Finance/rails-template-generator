@@ -9,7 +9,7 @@ const buildApplicationLink = () => {
   const { actionCable, appName, mailer, templateParams, $railsNew } = retrieveUI();
   $railsNew[!!appName ? 'removeClass' : 'addClass']('is-invalid');
 
-  $railsNew.text(!!appName ? ['rails new', appName, '-T', db(templateParams.db), ui(templateParams.ui),
+  $railsNew.text(!!appName ? ['rails new', appName, '-T', api(templateParams.api), db(templateParams.db), ui(templateParams.ui),
                               !!mailer ? null : '-M', !!actionCable ? null : '--skip-action-cable',
                               `--template "${templateUrl($railsNew, templateParams)}"`].filter(Boolean).join(' ')
                            : 'Enter an application name');
@@ -46,6 +46,7 @@ const enableOutputSelection = () => {
 
 const db = db => !!db ? `-d ${db}` : '-O';
 const ui = ui => !!ui ? '--webpacker --skip-turbolinks' : '-J';
+const api = api => !!api ? '--api' : '';
 
 const retrieveDisplayName = appName => {
   const $displayName = $('input#display_name');
