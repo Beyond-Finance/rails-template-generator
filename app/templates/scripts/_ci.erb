@@ -100,7 +100,7 @@ jobs:
       - run:
           name: Database setup
           command: |
-            bundle exec rails db:drop db:create db:migrate
+            bundle exec rails db:setup --trace
 <% if @template.ui? %>
       - run:
           name: Compile webpacker manifest and files
@@ -148,13 +148,6 @@ jobs:
             source $BASH_ENV
             gem install bundler
             bundle check || bundle install
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: Database setup
-          command: |
-            bundle exec rails db:drop db:create db:migrate
       - run:
           name: rubocop
           command: |
