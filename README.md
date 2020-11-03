@@ -1,5 +1,7 @@
 # Rails Template Generator
 
+[github.com/Beyond-Finance/rails-template-generator](https://github.com/Beyond-Finance/rails-template-generator/)
+
 Standing up a new Rails application or plugin is (relatively) simple and straightforward (and fun!).
 
 Even so, given the flexibility of the Rails framework, there is a lot to do after issuing a `rails new` command to get everything just right before beginning to write feature code. _And_ getting the flags for that `rails new` command can take a little effort as well.
