@@ -1,6 +1,213 @@
   puts "\nConfiguring Code Climate"
-  create_file '.code_climate', <%= file_as_quoted_string('.code_climate') %>
+  create_file '.code_climate', <<-CODECLIMATE
+plugins:
+  bundler-audit:
+    enabled: true
+<% if @template.ui? %>
+  csslint
+    enabled: true
+  eslint
+    enabled: true
+<% end %>
+  fixme
+    enabled: true
+<% if @template.ui? %>
+  stylelint
+    enabled: true
+<% end %>
+  CODECLIMATE
 
   puts "\nConfiguring CircleCI"
-  create_file ".circleci/config.yml", <%= file_as_quoted_string('.circleci.yml') %>
-  <%= "gsub_file '.circleci/config.yml', /TODO_CC_TEST_REPORTER_ID/, '#{@template.cc_test_reporter_id}'".html_safe if @template.cc_test_reporter_id? %>
+  cache_key = '{{ checksum "Gemfile.lock" }}<%= '-{{ checksum "yarn.lock" }}'.html_safe if @template.ui? %>'
+
+  create_file '.circleci/config.yml', <<-CIRCLECI
+version: 2
+
+references:
+  default_docker_ruby_executor: &default_docker_ruby_executor
+    image: circleci/ruby:#{RUBY_VERSION}-node-browsers
+    environment:
+      BUNDLE_PATH: vendor/bundle
+      PGHOST: 127.0.0.1
+      PGUSER: #{app_name}
+      RAILS_ENV: test
+      COVERAGE: true
+      TZ: /usr/share/zoneinfo/America/Chicago
+  postgres: &postgres
+    image: circleci/postgres:11.4-alpine
+    environment:
+      POSTGRES_DB: #{app_name}_test
+      POSTGRES_USER: #{app_name}
+
+jobs:
+  build:
+    working_directory: ~/#{app_name}/#{app_name}_index
+    docker:
+      - *default_docker_ruby_executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
+<% if @template.ui? %>
+      - run:
+          name: yarn install
+          command: yarn install
+<% end %>
+      - run:
+          name: Bundle Install
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+            bundle check || bundle install
+      - save_cache:
+          key: #{app_name}-#{cache_key}
+          paths:
+<% if @template.ui? %>
+            - ~/#{app_name}/#{app_name}_index/node_modules
+<% end %>
+            - ~/#{app_name}/#{app_name}_index/vendor/bundle
+
+  test:
+    working_directory: ~/#{app_name}/#{app_name}_index
+    parallelism: 1
+    docker:
+      - *default_docker_ruby_executor
+      - *postgres
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
+      - run:
+          name: Bundle Install
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+            bundle check || bundle install
+      - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Database setup
+          command: |
+            bundle exec rails db:setup --trace
+<% if @template.ui? %>
+      - run:
+          name: Compile webpacker manifest and files
+          command: |
+            bundle exec rails webpacker:compile
+<% end %>
+      - run:
+          name: Run RSpec
+          command: |
+            mkdir /tmp/test-results
+            ./cc-test-reporter before-build
+            TESTFILES=$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+            bundle exec rspec $TESTFILES --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec.xml --format progress
+      - run:
+          name: Code Climate Test Coverage
+          command: |
+            ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
+
+      - persist_to_workspace:
+          root: coverage
+          paths:
+            - codeclimate.*.json
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
+
+  rubocop:
+    working_directory: ~/#{app_name}/#{app_name}_index
+    parallelism: 1
+    docker:
+      - *default_docker_ruby_executor
+      - *postgres
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
+      - run:
+          name: Bundle Install
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+            bundle check || bundle install
+      - run:
+          name: rubocop
+          command: |
+            bundle exec rubocop
+
+<% if @template.ui? %>
+  yarn_test:
+    working_directory: ~/#{app_name}/#{app_name}_index
+    docker:
+      - *default_docker_ruby_executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
+      - run:
+          name: yarn test
+          command: yarn jest --ci --passWithNoTests --runInBand --reporters=default --reporters=jest-junit
+      - store_test_results:
+          path: /tmp/junit
+      - store_artifacts:
+          path: /tmp/junit
+<% end %>
+
+  upload-coverage:
+    working_directory: ~/#{app_name}/#{app_name}_index
+    docker:
+      - *default_docker_ruby_executor
+    environment:
+      CC_TEST_REPORTER_ID: TODO_CC_TEST_REPORTER_ID
+    steps:
+      - attach_workspace:
+          at: ~/#{app_name}/#{app_name}_index
+      - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - run:
+          name: Combine and Upload Coverage
+          command: |
+            ./cc-test-reporter sum-coverage --output - codeclimate.*.json | ./cc-test-reporter upload-coverage --debug --input -
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - rubocop:
+          requires:
+            - build
+<% if @template.ui? %>
+      - yarn_test:
+          requires:
+            - build
+<% end %>
+      - upload-coverage:
+          requires:
+             - test
+  CIRCLECI

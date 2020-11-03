@@ -21,12 +21,18 @@
         = text_field_tag :display_name, nil, class: 'form-control', placeholder: 'Your App Name'
 
       .form-group
-        = label_tag :cc_test_reporter_id, 'CircleCI CC_TEST_REPORTER_ID'
-        = text_field_tag :cc_test_reporter_id, nil, class: 'form-control',
-                                                    placeholder: 'TODO: update .circleci/config.yml after generation if you do not have this yet'
+        .form-check
+          = check_box_tag :ci, 'CI', true, class: 'form-check-input has-options'
+          div
+            = label_tag :ci, 'CI', class: 'form-check-label'
+            ul.nested-options.p-0
+              li
+                = link_to 'CircleCI', '//circleci.com/', class: 'd-block', target: '_blank'
+                .text-danger TODO: update <code class='font-weight-bold'>CC_TEST_REPORTER_ID</code> in .circleci/config.yml after repository creation
+              li = link_to 'Code Climate', '//codeclimate.com/', target: '_blank'
 
       .form-group.application.mountable
-        label options
+        label.font-weight-bold options
 
         .form-check
           = check_box_tag :db, 'postgresql', true, class: 'form-check-input'
@@ -34,7 +40,7 @@
 
         .form-check
           = check_box_tag :ui, 'webpacker', true, class: 'form-check-input'
-          = label_tag :ui, 'ui [webpacker]', class: 'form-check-label'
+          = label_tag :ui, 'ui [webpacker + Bootstrap + jQuery + slim]', class: 'form-check-label'
 
         .form-check
           = check_box_tag :mailer, 'action mailer', true, class: 'form-check-input'
@@ -46,7 +52,7 @@
 
       .form-group.mt-5
         label.application execute in application parent directory:
-        label.mountable.plugin.d-none
+        label.mountable.plugin.d-none execute in plugin parent directory:
         output#rails-new.form-control.bg-light.overflow-auto.text-nowrap data-url=(template_url(':attrs'))
 
 = javascript_pack_tag 'templates'

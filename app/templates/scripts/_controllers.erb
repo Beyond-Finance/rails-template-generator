@@ -6,6 +6,8 @@
   puts "\nAdding default home"
   create_file 'app/controllers/home_controller.rb', "class HomeController < ApplicationController\nend"
   create_file 'app/views/home/index.slim', <%= file_as_quoted_string 'views/home.slim' %>
+  gsub_file 'app/views/home/index.slim', /APP_NAME/, app_name
+  gsub_file 'app/views/home/index.slim', /DISPLAY_NAME/, display_name
   create_file 'spec/controllers/home_controller_spec.rb', <%= file_as_quoted_string 'spec/controllers/home_controller_spec.rb' %>
   <%end%>
 

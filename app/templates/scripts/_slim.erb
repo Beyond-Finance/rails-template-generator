@@ -5,3 +5,4 @@ insert_into_file 'config/application.rb',
                  after: 'class Application < Rails::Application'
 remove_file 'app/views/layouts/application.html.erb'
 create_file 'app/views/layouts/application.slim', <%= file_as_quoted_string('application.slim') %>
+gsub_file 'app/views/layouts/application.slim', /DISPLAY_NAME/, display_name
