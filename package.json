@@ -17,8 +17,7 @@
     "jest": "^26.1.0",
     "jest-junit": "^11.0.1",
     "webpack-dev-server": "^3.11.0"
-  }
-  ,
+  },
   "jest": {
     "roots": [
       "<rootDir>/app/javascript/tests"
