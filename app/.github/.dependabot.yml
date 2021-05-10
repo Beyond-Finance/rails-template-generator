@@ -7,9 +7,24 @@ updates:
   open-pull-requests-limit: 10
   target-branch: dependabot-updates
   ignore:
+  - dependency-name: authy
+    versions:
+    - ">= 0"
+  - dependency-name: ccpa
+    versions:
+    - ">= 0"
   - dependency-name: land
+    versions:
+    - ">= 0"
+  - dependency-name: lead_submission
     versions:
     - ">= 0"
   - dependency-name: request_logger
     versions:
     - ">= 0"
+  - dependency-name: rubocop
+    versions:
+    - 1.10.0
+  - dependency-name: puma
+    versions:
+    - 5.2.1
