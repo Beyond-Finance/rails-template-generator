@@ -4,4 +4,4 @@
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rspec-rails'
   spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'simplecov', '< 0.18'
+  spec.add_development_dependency 'simplecov'

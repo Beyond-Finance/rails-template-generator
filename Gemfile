@@ -50,5 +50,5 @@ group :test do
   gem 'rspec-html-matchers'
   gem 'rspec_junit_formatter'
   gem 'rspec-rails'
-  gem 'simplecov', '< 0.18', require: false
+  gem 'simplecov', require: false
 end
