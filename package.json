@@ -16,7 +16,7 @@
     "stylelint": "^13.13.1",
     "trim": "^1.0.1",
     "trim-newlines": "^4.0.2",
-    "url-parse": "^1.5.1",
+    "url-parse": "^1.5.2",
     "ws": "^7.5.3"
   },
   "resolutions": {
