@@ -2,6 +2,10 @@
   run 'spring stop'
   rails_command 'g rspec:install'
   run 'bundle binstubs rspec-core'
+  <% if @template.ui? %>
+  create_file 'spec/support/shared_examples/web_content_accessibility_examples.rb', <%= file_as_quoted_string 'spec/support/shared_examples/web_content_accessibility_examples.rb' %>
+  insert_into_file 'spec/spec_helper.rb', "\nconfig.filter_run_excluding :wcag\n", after: /RSpec\.configure do \|config\|\R/
+  <% end %>
   <% if @template.type == 'mountable' %>
   prepend_to_file 'spec/spec_helper.rb', "\nrequire 'rails'\nrequire '#{name}'\nrequire 'pry'\nrequire 'faker'\n\n"
   gsub_file 'spec/rails_helper.rb', /^require File.expand_path\('.*'/, "require File.expand_path('dummy/config/environment.rb'"

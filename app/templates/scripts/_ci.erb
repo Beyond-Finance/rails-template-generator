@@ -154,6 +154,43 @@ jobs:
             bundle exec rubocop
 
 <% if @template.ui? %>
+  wcag_test:
+    working_directory: ~/#{app_name}/#{app_name}_index
+    parallelism: 1
+    docker:
+      - *default_docker_ruby_executor
+      - *postgres
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - #{app_name}-#{cache_key}
+            - #{app_name}-
+      - run:
+          name: Install postgresql-client
+          command: sudo apt update; sudo apt install -y postgresql-client || true
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Database setup
+          command: |
+            bundle exec rails db:setup --trace
+      - run:
+          name: Compile webpacker manifest and files
+          command: |
+            bundle exec rails webpacker:compile
+      - run:
+          name: Run RSpec (wcag)
+          command: |
+            mkdir /tmp/wcag-test-results
+            SIMPLECOV=off bundle exec rspec spec/features --tag wcag --format RspecJunitFormatter --out /tmp/wcag-test-results/rspec.xml --format progress
+      - store_test_results:
+          path: /tmp/wcag-test-results
+      - store_artifacts:
+          path: /tmp/wcag-test-results
+          destination: wcag-test-results
+
   yarn_test:
     working_directory: ~/#{app_name}/#{app_name}_index
     docker:
@@ -203,6 +240,9 @@ workflows:
           requires:
             - build
 <% if @template.ui? %>
+      - wcag_test:
+          requires:
+            - build
       - yarn_test:
           requires:
             - build
