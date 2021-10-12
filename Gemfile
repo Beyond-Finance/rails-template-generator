@@ -15,13 +15,13 @@ gem 'webpacker'
 
 gem 'bootsnap'
 
-gem "actionpack", ">= 6.1.3.2"
+gem 'actionpack', '>= 6.1.3.2'
 gem 'aws-sdk'
 gem 'aws-sdk-rails'
 gem 'aws-sdk-secretsmanager', require: false
 gem 'newrelic_rpm'
 gem 'nokogiri', '>= 1.11.4'
-gem "rexml", ">= 3.2.5"
+gem 'rexml', '>= 3.2.5'
 gem 'route_downcaser'
 gem 'slim-rails'
 gem 'uglifier'

@@ -28,8 +28,7 @@
     "ssri": "8.0.1",
     "tar": "6.1.11",
     "ansi-regex": "5.0.1",
-    "nth-check": "2.0.1",
-    "set-value": "4.0.1"
+    "nth-check": "2.0.1"
   },
   "comments": {
     "bootstrap": "Migrating to 5.x.x requires a passs at migrating view classes",
