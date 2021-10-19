@@ -8,7 +8,7 @@
     "bootstrap": "^4.5.0",
     "dns-packet": "^5.3.0",
     "hosted-git-info": "^4.0.2",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "jquery-ujs": "^1.2.3",
     "lodash": "^4.17.21",
     "normalize-url": "^7.0.1",
