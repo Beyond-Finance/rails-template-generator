@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Code Climate Test Coverage
           command: |
-            ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
+            ./cc-test-reporter format-coverage "coverage/codeclimate.$CIRCLE_NODE_INDEX.json" -t simplecov -o
 
       - persist_to_workspace:
           root: coverage
