@@ -147,7 +147,7 @@ jobs:
     docker:
       - *default_docker_ruby_executor
     environment:
-      CC_TEST_REPORTER_ID: TODO_REPLACE_WITH_CC_TEST_REPORTER_ID
+      CC_TEST_REPORTER_ID: 1e695aa3e13ad48df5e34d3bb3802d121d3b007670c7735ebb800310ef7e4571
     steps:
       - attach_workspace:
           at: ~/rails_template_generator/rails_template_generator_index
