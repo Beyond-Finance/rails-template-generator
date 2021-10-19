@@ -43,7 +43,7 @@ jobs:
             - ~/rails_template_generator/rails_template_generator_index/node_modules
             - ~/rails_template_generator/rails_template_generator_index/vendor/bundle
 
-  test:
+  rspec_test:
     working_directory: ~/rails_template_generator/rails_template_generator_index
     parallelism: 1
     docker:
@@ -100,7 +100,7 @@ jobs:
           path: /tmp/test-results
           destination: test-results
 
-  rubocop:
+  brakeman:
     working_directory: ~/rails_template_generator/rails_template_generator_index
     parallelism: 1
     docker:
@@ -110,26 +110,19 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - rails_template_generator-{{ checksum "Gemfile.lock" }}
-            - rails_template_generator-
+            - rails_template_generator/-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+            - rails_template_generator/-
       - run:
           name: Bundle Install
           command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d )' >> $BASH_ENV
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
             source $BASH_ENV
             gem install bundler
             bundle check || bundle install
       - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: Database setup
+          name: brakeman
           command: |
-            bundle exec rails db:drop db:create db:migrate
-      - run:
-          name: rubocop
-          command: |
-            bundle exec rubocop
+            bundle exec brakeman
 
   yarn_test:
     working_directory: ~/rails_template_generator/rails_template_generator_index
@@ -154,7 +147,7 @@ jobs:
     docker:
       - *default_docker_ruby_executor
     environment:
-      CC_TEST_REPORTER_ID: TODO_CC_TEST_REPORTER_ID
+      CC_TEST_REPORTER_ID: TODO_REPLACE_WITH_CC_TEST_REPORTER_ID
     steps:
       - attach_workspace:
           at: ~/rails_template_generator/rails_template_generator_index
@@ -172,13 +165,13 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test:
-          requires:
-            - build
-      - rubocop:
+      - rspec_test:
           requires:
             - build
       - yarn_test:
+          requires:
+            - build
+      - brakeman:
           requires:
             - build
       - upload-coverage:

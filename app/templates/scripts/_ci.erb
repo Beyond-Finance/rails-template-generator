@@ -1,20 +1,44 @@
   puts "\nConfiguring Code Climate"
-  create_file '.code_climate', <<-CODECLIMATE
+  create_file '.code_climate.yml', <<-CODECLIMATE
+version: "2"
 plugins:
   bundler-audit:
     enabled: true
 <% if @template.ui? %>
-  csslint
+  csslint:
     enabled: true
-  eslint
+  eslint:
     enabled: true
 <% end %>
-  fixme
+  fixme:
     enabled: true
+    config:
+      strings:
+      - TODO
+  rubocop:
+    enabled: true
+    # Locked channel/version to make sure it matches with version in the Gemfile. Update both when updating one.
+    # Find available versions here: https://github.com/codeclimate/codeclimate-rubocop/branches/all?utf8=%E2%9C%93&query=channel%2Frubocop
+    channel: rubocop-1-18-3
 <% if @template.ui? %>
-  stylelint
+  stylelint:
     enabled: true
 <% end %>
+
+exclude_patterns:
+  - "config/"
+  - "db/"
+  - "dist/"
+  - "features/"
+  - "**/node_modules/"
+  - "script/"
+  - "**/spec/"
+  - "**/test/"
+  - "**/tests/"
+  - "Tests/"
+  - "**/vendor/"
+  - "**/*_test.go"
+  - "**/*.d.ts"
   CODECLIMATE
 
   puts "\nConfiguring CircleCI"
@@ -28,16 +52,20 @@ references:
     image: circleci/ruby:#{RUBY_VERSION}-node-browsers
     environment:
       BUNDLE_PATH: vendor/bundle
+<% if @template.db? %>
       PGHOST: 127.0.0.1
       PGUSER: #{app_name}
+<% end %>
       RAILS_ENV: test
       COVERAGE: true
       TZ: /usr/share/zoneinfo/America/Chicago
+<% if @template.db? %>
   postgres: &postgres
     image: circleci/postgres:11.4-alpine
     environment:
       POSTGRES_DB: #{app_name}_test
       POSTGRES_USER: #{app_name}
+<% end %>
 
 jobs:
   build:
@@ -70,7 +98,7 @@ jobs:
 <% end %>
             - ~/#{app_name}/#{app_name}_index/vendor/bundle
 
-  test:
+  rspec_test:
     working_directory: ~/#{app_name}/#{app_name}_index
     parallelism: 1
     docker:
@@ -94,6 +122,7 @@ jobs:
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
+<% if @template.db? %>
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
@@ -101,6 +130,7 @@ jobs:
           name: Database setup
           command: |
             bundle exec rails db:setup --trace
+<% end%>
 <% if @template.ui? %>
       - run:
           name: Compile webpacker manifest and files
@@ -128,8 +158,8 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
-
-  rubocop:
+  
+  brakeman:
     working_directory: ~/#{app_name}/#{app_name}_index
     parallelism: 1
     docker:
@@ -149,9 +179,9 @@ jobs:
             gem install bundler
             bundle check || bundle install
       - run:
-          name: rubocop
+          name: brakeman
           command: |
-            bundle exec rubocop
+            bundle exec brakeman
 
 <% if @template.ui? %>
   wcag_test:
@@ -166,6 +196,7 @@ jobs:
           keys:
             - #{app_name}-#{cache_key}
             - #{app_name}-
+<% if @template.db? %>
       - run:
           name: Install postgresql-client
           command: sudo apt update; sudo apt install -y postgresql-client || true
@@ -176,6 +207,7 @@ jobs:
           name: Database setup
           command: |
             bundle exec rails db:setup --trace
+<% end %>
       - run:
           name: Compile webpacker manifest and files
           command: |
@@ -215,7 +247,7 @@ jobs:
     docker:
       - *default_docker_ruby_executor
     environment:
-      CC_TEST_REPORTER_ID: TODO_CC_TEST_REPORTER_ID
+      CC_TEST_REPORTER_ID: TODO_REPLACE_WITH_CC_TEST_REPORTER_ID
     steps:
       - attach_workspace:
           at: ~/#{app_name}/#{app_name}_index
@@ -233,10 +265,10 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test:
+      - rspec_test:
           requires:
             - build
-      - rubocop:
+      - brakeman:
           requires:
             - build
 <% if @template.ui? %>
