@@ -31,6 +31,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'pry'
+  # Locked version to make sure it matches with version in codeclimate.yml. Update both when updating one.
   gem 'rubocop', '1.18.3', require: false
 
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
