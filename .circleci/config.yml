@@ -168,10 +168,10 @@ workflows:
       - rspec_test:
           requires:
             - build
-      - yarn_test:
+      - brakeman:
           requires:
             - build
-      - brakeman:
+      - yarn_test:
           requires:
             - build
       - upload-coverage:
