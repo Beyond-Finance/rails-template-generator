@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 global.$ = require('jquery');
 import mountTemplateForm from 'ui/mount_template_form';
 
