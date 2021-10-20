@@ -43,7 +43,7 @@ jobs:
             - ~/rails_template_generator/rails_template_generator_index/node_modules
             - ~/rails_template_generator/rails_template_generator_index/vendor/bundle
 
-  test:
+  rspec_test:
     working_directory: ~/rails_template_generator/rails_template_generator_index
     parallelism: 1
     docker:
@@ -53,27 +53,24 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - rails_template_generator-{{ checksum "Gemfile.lock" }}
+            - rails_template_generator-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
             - rails_template_generator-
-      - run:
-          name: Bundle Install
-          command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
-            source $BASH_ENV
-            gem install bundler
-            bundle check || bundle install
       - run:
           name: Install Code Climate Test Reporter
           command: |
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
+
+      - run:
+          name: Install postgresql-client
+          command: sudo apt -y update; sudo apt install -y postgresql-client || true
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
       - run:
           name: Database setup
           command: |
-            bundle exec rails db:drop db:create db:migrate
+            bundle exec rails db:setup --trace
       - run:
           name: Compile webpacker manifest and files
           command: |
@@ -89,7 +86,6 @@ jobs:
           name: Code Climate Test Coverage
           command: |
             ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
-
       - persist_to_workspace:
           root: coverage
           paths:
@@ -99,8 +95,10 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
+      - store_artifacts:
+          path: coverage
 
-  rubocop:
+  brakeman:
     working_directory: ~/rails_template_generator/rails_template_generator_index
     parallelism: 1
     docker:
@@ -110,26 +108,19 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - rails_template_generator-{{ checksum "Gemfile.lock" }}
-            - rails_template_generator-
+            - rails_template_generator/-{{ checksum "Gemfile.lock" }}-{{ checksum "yarn.lock" }}
+            - rails_template_generator/-
       - run:
           name: Bundle Install
           command: |
-            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d )' >> $BASH_ENV
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
             source $BASH_ENV
             gem install bundler
             bundle check || bundle install
       - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://localhost:5432 -timeout 1m
-      - run:
-          name: Database setup
+          name: brakeman
           command: |
-            bundle exec rails db:drop db:create db:migrate
-      - run:
-          name: rubocop
-          command: |
-            bundle exec rubocop
+            bundle exec brakeman
 
   yarn_test:
     working_directory: ~/rails_template_generator/rails_template_generator_index
@@ -154,7 +145,7 @@ jobs:
     docker:
       - *default_docker_ruby_executor
     environment:
-      CC_TEST_REPORTER_ID: TODO_CC_TEST_REPORTER_ID
+      CC_TEST_REPORTER_ID: 1e695aa3e13ad48df5e34d3bb3802d121d3b007670c7735ebb800310ef7e4571
     steps:
       - attach_workspace:
           at: ~/rails_template_generator/rails_template_generator_index
@@ -172,10 +163,10 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test:
+      - rspec_test:
           requires:
             - build
-      - rubocop:
+      - brakeman:
           requires:
             - build
       - yarn_test:
@@ -183,4 +174,4 @@ workflows:
             - build
       - upload-coverage:
           requires:
-             - test
+             - rspec_test

@@ -21,6 +21,7 @@ after_bundle do
 <%= render partial: 'scripts/ci' if @template.ci? %>
 <%= render partial: 'scripts/support' %>
 <%= render partial: 'scripts/git' %>
+<%= render partial: 'scripts/pull_request_template' %>
 <% if @template.ui? %>
   if yes?('Test + start application?')
     run 'bin/rspec'

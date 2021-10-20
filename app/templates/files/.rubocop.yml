@@ -1,4 +1,7 @@
 AllCops:
+  SuggestExtensions: false
+  NewCops: enable
+
   Exclude:
     - 'bin/**/*'
     - 'vendor/**/*'
@@ -7,8 +10,8 @@ AllCops:
 
 Metrics/BlockLength:
   Exclude:
-    - 'config/environments/*'
     - 'config/routes.rb'
+    - 'config/environments/development.rb'
     - 'spec/**/*'
 
 Style/Documentation:
