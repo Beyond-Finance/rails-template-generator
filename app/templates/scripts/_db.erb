@@ -1,8 +1,6 @@
-  <% if @template.db? %>  
   puts "\nUpdating database configuration"
   insert_into_file 'config/database.yml', "\nstaging:\n  url: <%= '<%='.html_safe %> ENV['DATABASE_URL'] %>\n\n", before: 'production:'
   gsub_file 'config/database.yml', /production:(.|\s|\R)*$/, "production:\n  url: <%= '<%='.html_safe %> ENV['DATABASE_URL'] %>"
 
   puts "\nInitializing database"
   rails_command 'db:create db:migrate'
-  <% end %>
