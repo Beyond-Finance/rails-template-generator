@@ -15,7 +15,7 @@
 
   puts "\nConfigure stylelint + apply to generated files"
   create_file '.stylelintrc', <%= file_as_quoted_string '.stylelintrc' %>
-  run 'yarn stylelint --fix public/*.html'
+  # Rails generates error pages that can't automatically be fixed by this at the moment: run 'yarn stylelint --fix public/*.html --custom-syntax=postcss-html'
 
   puts "\nCreating Procfile"
   create_file 'Procfile', "rails: bin/rails s -p \"${#{@app_name.underscore.upcase}_PORT:-3000}\"\nwebpacker: bin/webpack-dev-server"
