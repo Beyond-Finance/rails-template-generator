@@ -1,3 +1,5 @@
+#_⚠ WARNING!! The generator currently requires Rails < 7 due to the migration away from webpacker for FE assets; Update coming soon! ⚠_
+
 # Rails Template Generator
 
 [github.com/Beyond-Finance/rails-template-generator](https://github.com/Beyond-Finance/rails-template-generator/)
