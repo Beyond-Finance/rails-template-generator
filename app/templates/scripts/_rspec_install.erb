@@ -2,6 +2,7 @@
   run 'spring stop'
   rails_command 'g rspec:install'
   run 'bundle binstubs rspec-core'
+
   <% if @template.ui? %>
   create_file 'spec/support/shared_examples/web_content_accessibility_examples.rb', <%= file_as_quoted_string 'spec/support/shared_examples/web_content_accessibility_examples.rb' %>
   insert_into_file 'spec/spec_helper.rb', "\nconfig.filter_run_excluding :wcag\n", after: /RSpec\.configure do \|config\|\R/

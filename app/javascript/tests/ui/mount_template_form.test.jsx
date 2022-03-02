@@ -25,7 +25,7 @@ describe('template form', () => {
                                 '<input id="plugin_name" />' +
                                 '<input id="display_name" />' +
                                 '<input id="db" name="db" type="checkbox" value="postgresql" checked="checked" />' +
-                                '<input id="ui" name="ui" type="checkbox" value="webpacker" checked="checked" />' +
+                                '<input id="ui" name="ui" type="checkbox" value="webpack" checked="checked" />' +
                                 '<input id="mailer" name="mailer" type="checkbox" value="action mailer" checked="checked" />' +
                                 '<input id="action_cable" name="action_cable" type="checkbox" value="action cable" />' +
                                 '<div>' +
@@ -104,11 +104,11 @@ describe('template form', () => {
       inputText($appName, 'test-app');
 
       expect($ui.is(':checked')).toBeTruthy();
-      expect($output.text()).toContain(' --webpacker --skip-turbolinks ');
+      expect($output.text()).toContain(' -j webpack --skip-turbolinks ');
       expect(decodedAttrs().ui).toBeTruthy();
 
       $ui.trigger('click');
-      expect($output.text()).not.toContain(' --webpacker --skip-turbolinks ');
+      expect($output.text()).not.toContain(' -j webpack --skip-turbolinks ');
       expect(decodedAttrs().ui).toBeFalsy();
     });
 

@@ -1,0 +1,24 @@
+  puts "\nAdding package.json config"
+  insert_into_file 'package.json', <%= file_as_quoted_string 'inserts/package.json' %>, before: /\R}$/
+  insert_into_file 'package.json', <%= file_as_quoted_string 'inserts/package_scripts.json' %>, after: /"build":.*\R/
+  # ugh, \\\\ above and various variations convert to a single backslash on insertion to file
+  gsub_file 'package.json', /BACKSLASH/, '\\'
+
+  puts "\nAdding webpack.config.js"
+  remove_file 'webpack.config.js'
+  create_file 'webpack.config.js', <%= file_as_quoted_string 'webpack.config.js' %>
+  # ugh, \\\\ above and various variations convert to a single backslash on insertion to file
+  gsub_file 'webpack.config.js', /BACKSLASH/, '\\'
+
+  puts "\nUpdating application assets"
+  remove_file 'app/javascript/application.js'
+  create_file 'app/javascript/packs/application.jsx', <%= file_as_quoted_string 'packs/application.js' %>
+  remove_file 'app/assets/stylesheets/application.css'
+  create_file 'app/javascript/styles/application.scss', ''
+
+  puts "\nConfigure stylelint"
+  create_file '.stylelintrc', <%= file_as_quoted_string '.stylelintrc' %>
+  # Rails generates error pages that can't automatically be fixed by this at the moment: run 'yarn stylelint --fix public/*.html --custom-syntax=postcss-html'
+
+  puts "\nCreating webpack .keep directories"
+  %w[app/javascript/images app/javascript/tests].each { |d| create_file "#{d}/.keep" }

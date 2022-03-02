@@ -133,9 +133,9 @@ jobs:
 <% end%>
 <% if @template.ui? %>
       - run:
-          name: Compile webpacker manifest and files
+          name: Compile webpack and sprockets assets
           command: |
-            bundle exec rails webpacker:compile
+            bundle exec rails assets:precompile
 <% end %>
       - run:
           name: Run RSpec
@@ -209,9 +209,9 @@ jobs:
             bundle exec rails db:setup --trace
 <% end %>
       - run:
-          name: Compile webpacker manifest and files
+          name: Compile webpack and sprockets assets
           command: |
-            bundle exec rails webpacker:compile
+            bundle exec rails assets:precompile
       - run:
           name: Run RSpec (wcag)
           command: |
