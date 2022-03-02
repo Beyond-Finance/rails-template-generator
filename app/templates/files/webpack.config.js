@@ -31,7 +31,7 @@ module.exports = {
             return resourcePath.replace(/^.*appBACKSLASH/javascriptBACKSLASH/imagesBACKSLASH//, '');
           },
         },
-        test: /BACKSLASH.(png|jpe?g|gif|eot|woff2|woff|ttf|svg)$/i,
+        test: /BACKSLASH.(png|jpe?g|gif|eot|ico|otf|webp|woff2|woff|ttf|tiff|svg)$/i,
       },
     ],
   },
