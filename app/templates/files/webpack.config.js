@@ -18,7 +18,7 @@ module.exports = {
         exclude: /node_modules/,
         use: ['babel-loader'],
       },
-      // compile css from scss, but leave asset url substituiton to sprockets
+      // compile css from scss, but leave asset url substitution to sprockets
       {
         test: /BACKSLASH.s[ac]ss$/i,
         use: [MiniCssExtractPlugin.loader, { loader: 'css-loader', options: { url: false }, }, 'sass-loader'],
