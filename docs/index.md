@@ -1,5 +1,3 @@
-#_⚠ WARNING!! The generator currently requires Rails < 7 due to the migration away from webpacker for FE assets; Update coming soon! ⚠_
-
 # Rails Template Generator
 
 [github.com/Beyond-Finance/rails-template-generator](https://github.com/Beyond-Finance/rails-template-generator/)
@@ -55,8 +53,7 @@ The **db** option, selected by default, will configure the application database 
 
 The **ui** option, selected by default:
 - Sets up [Slim](http://slim-lang.com/) as the view template language, including converting the application layout file to slim and linking expected base front end asset files.
-- Configures [Webpacker](https://github.com/rails/webpacker) as the front end asset manager.
-- Includes [Bootstrap](https://getbootstrap.com/) as a package, and adds the Bootstrap stylesheet to the application stylesheet in order to provide the grid and utility classes.
+- Configures [JavaScript Bundler for Rails](https://github.com/rails/jsbundling-rails/) to use [Webpack](https://webpack.js.org/) as the front end asset manager.
 - Adds [Jest](https://jestjs.io/) for script tests.
 
 Additional options drive flags for the `new` command and drive minimal, if any, template script actions.
@@ -88,7 +85,7 @@ Assuming you keep your local applications in a `work` directory, that may look s
 
 ```
 % cd ~/work
-work % rails new new-app -T -d postgresql --webpacker --skip-turbolinks --skip-action-cable --template "http://localhost:3000/templates/eyJjaSI6dHJ1ZSwiZGIiOiJwb3N0Z3Jlc3FsIiwidWkiOnRydWUsIm1haWxlciI6dHJ1ZSwiYWN0aW9uX2NhYmxlIjpmYWxzZSwiYXBpIjpmYWxzZSwiZGlzcGxheU5hbWUiOiJOZXcgQXBwIiwidHlwZSI6ImFwcGxpY2F0aW9uIn0="
+work % rails new new-app -T -d postgresql -j webpack --skip-turbolinks --skip-action-cable --template "http://localhost:3000/templates/eyJjaSI6dHJ1ZSwiZGIiOiJwb3N0Z3Jlc3FsIiwidWkiOnRydWUsIm1haWxlciI6dHJ1ZSwiYWN0aW9uX2NhYmxlIjpmYWxzZSwiYXBpIjpmYWxzZSwiZGlzcGxheU5hbWUiOiJOZXcgQXBwIiwidHlwZSI6ImFwcGxpY2F0aW9uIn0="
 
       create
       create  README.md
@@ -105,8 +102,8 @@ Test + start application? y
          run  yarn test from "."
          ...
          run foreman start from "."
-12:11:14 rails.1     | started with pid 56140
-12:11:14 webpacker.1 | started with pid 56141
+12:11:14 js.1  | started with pid 56140
+12:11:14 web.1 | started with pid 56141
 ...
 12:13:25 rails.1     |
 ```

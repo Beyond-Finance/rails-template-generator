@@ -1,4 +1,7 @@
   ,
+  "babel": {
+    "presets": ["@babel/preset-env"]
+  },
   "jest": {
     "roots": [
       "<rootDir>/app/javascript/tests"
@@ -24,8 +27,4 @@
     "transform": {
       "^.+BACKSLASHBACKSLASH.js(x)?$": "<rootDir>/node_modules/babel-jest"
     }
-  },
-  "scripts": {
-    "css-fix": "stylelint --fix app/**/*.*css",
-    "test": "jest --config package.json --passWithNoTests"
   }

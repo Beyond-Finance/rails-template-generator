@@ -1,0 +1,3 @@
+,
+    "css-fix": "stylelint --fix app/**/*.*css",
+    "test": "jest --config package.json --passWithNoTests"

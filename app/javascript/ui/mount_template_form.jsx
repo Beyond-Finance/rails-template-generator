@@ -45,7 +45,7 @@ const enableOutputSelection = () => {
 };
 
 const db = db => !!db ? `-d ${db}` : '-O';
-const ui = ui => !!ui ? '--webpacker --skip-turbolinks' : '-J';
+const ui = ui => !!ui ? '-j webpack --skip-turbolinks' : '-J';
 const api = api => !!api ? '--api' : '';
 
 const retrieveDisplayName = appName => {
