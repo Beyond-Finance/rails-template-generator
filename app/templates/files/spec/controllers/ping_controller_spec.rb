@@ -7,6 +7,5 @@ RSpec.describe PingController, type: :controller do
     before { get :index }
 
     it { expect(response).to have_http_status :success }
-    it { expect(response.body).to eq 'ok' }
   end
 end
