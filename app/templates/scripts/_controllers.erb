@@ -12,5 +12,9 @@
   <%end%>
 
   puts "\nAdding ping controller"
-  create_file 'app/controllers/ping_controller.rb', "class PingController < ActionController::Base\ndef index\nrender inline: 'ok'\nend\nend"
+  <% if @template.ui? %>
+    create_file 'app/controllers/ping_controller.rb', "class PingController < ApplicationController\ndef index\nrender inline: 'ok'\nend\nend"
+  <% else %>
+    create_file 'app/controllers/ping_controller.rb', "class PingController < ApplicationController\ndef index\nhead :ok\nend\nend"
+  <% end %>
   create_file 'spec/controllers/ping_controller_spec.rb', <%= file_as_quoted_string 'spec/controllers/ping_controller_spec.rb' %>

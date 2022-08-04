@@ -1,0 +1,7 @@
+  puts "\nInitializing rswag"
+  rails_command 'g rswag:install'
+  rails_command 'rswag'
+
+  inside 'config/initializers' do
+    run 'mv rswag-ui.rb rswag_ui.rb'
+  end

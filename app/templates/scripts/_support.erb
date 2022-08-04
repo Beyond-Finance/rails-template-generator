@@ -16,6 +16,4 @@
   puts "\nInitializing rubocop"
   create_file '.rubocop.yml', <%= file_as_quoted_string '.rubocop.yml' %>
   run 'bundle binstubs rubocop'
-  force_cops = %w[Style/FrozenStringLiteralComment Style/GlobalStdStream Style/RedundantFetchBlock]
-  run "bin/rubocop -A --only #{force_cops.join(',')}"
-  run 'bin/rubocop -a'
+  run 'bin/rubocop -A'

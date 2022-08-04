@@ -9,6 +9,7 @@ puts "\nGenerating #{display_name} [#{@app_name}]\n"
 
 after_bundle do
 <%= render partial: 'scripts/rspec_install' %>
+<%= render partial: 'scripts/rswag_install' if @template.api? %>
 <%= render partial: 'scripts/db' if @template.db? %>
 <%= render partial: 'scripts/environments' %>
 <% if @template.ui? %>
@@ -22,11 +23,13 @@ after_bundle do
 <%= render partial: 'scripts/support' %>
 <%= render partial: 'scripts/git' %>
 <%= render partial: 'scripts/pull_request_template' %>
-<% if @template.ui? %>
   if yes?('Test + start application?')
     run 'bin/rspec'
+    <% if @template.ui? %>
     run 'yarn test'
     run 'bin/dev'
+    <% else %>
+    run 'bin/rails s'
+    <% end %>
   end
-<% end %>
 end
