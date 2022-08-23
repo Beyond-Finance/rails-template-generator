@@ -1,8 +1,8 @@
-version: 2
+version: 2.1
 
 references:
   default_docker_ruby_executor: &default_docker_ruby_executor
-    image: circleci/ruby:2.7.1-node-browsers
+    image: cimg/ruby:2.7.4-browsers
     environment:
       BUNDLE_PATH: vendor/bundle
       PGHOST: 127.0.0.1
@@ -72,9 +72,9 @@ jobs:
           command: |
             bundle exec rails db:setup --trace
       - run:
-          name: Compile webpacker manifest and files
+          name: Compile assets manifest and files
           command: |
-            bundle exec rails webpacker:compile
+            bundle exec rails assets:precompile
       - run:
           name: Run RSpec
           command: |
