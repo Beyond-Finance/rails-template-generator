@@ -3,7 +3,7 @@
  */
 
 global.$ = require('jquery');
-import mountTemplateForm from 'ui/mount_template_form';
+import mountTemplateForm from '../../ui/mount_template_form';
 
 const APP_PROMPT = 'Enter an application name';
 

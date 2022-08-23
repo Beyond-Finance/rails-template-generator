@@ -7,11 +7,11 @@ ruby '2.7.1'
 
 gem 'hashie'
 gem 'jbuilder'
+gem 'jsbundling-rails'
 gem 'pg'
 gem 'puma'
 gem 'rails'
 gem 'sass-rails'
-gem 'webpacker'
 
 gem 'bootsnap'
 
