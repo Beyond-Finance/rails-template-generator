@@ -3,24 +3,24 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.4'
+ruby '3.1.3'
 
 gem 'hashie'
 gem 'jbuilder'
 gem 'jsbundling-rails'
 gem 'pg'
 gem 'puma'
-gem 'rails'
+gem 'rails', '~>7.0'
 gem 'sass-rails'
 
 gem 'bootsnap'
 
-gem 'actionpack', '>= 6.1.4.1'
+gem 'actionpack', '~>7.0'
 gem 'aws-sdk'
 gem 'aws-sdk-rails'
 gem 'aws-sdk-secretsmanager', require: false
 gem 'newrelic_rpm'
-gem 'nokogiri', '>= 1.12.5'
+gem 'nokogiri'
 gem 'rexml', '>= 3.2.5'
 gem 'route_downcaser'
 gem 'slim-rails'
